@@ -5,7 +5,7 @@ from app.errors.exceptions import InvalidIndexException
 
 class Bank:
     """
-    Base class for Bank API
+    Manages all about financial info and Bank API
     """
     adopter: BankAdopterInterface
     card_number: str
@@ -27,13 +27,13 @@ class Bank:
         self.card_number = card_number
         return self.adopter.is_registered(card_number)
 
-    def validate(self, entered_pin: str, card_number: Optional[str] = None) -> bool:
+    def validate(self, entered_pin: str, card_number: str = "") -> bool:
         """
         Check whether PIN number is correct or not
 
         :return: True if it is correct
         """
-        if card_number:
+        if len(card_number):
             self.card_number = card_number
         self.entered_pin = entered_pin
         res, self.token = self.adopter.validate(self.card_number, entered_pin)
@@ -77,13 +77,14 @@ class Bank:
         if len(self.accounts) > acc_idx >= 0:
             res, data = self.adopter.tx_update_account(self.token, acc_idx, amount)
             if res:
-                self.accounts[self.selected] = data
+                # self.accounts[self.selected] = data
+                self.accounts[acc_idx] = data
             return [res, data]
         else:
             raise InvalidIndexException("bank.update_account()")
 
     def reset(self):
-        """Remove all volatile informations in memory"""
+        """Remove all volatile information in memory"""
         self.card_number = ""
         self.entered_pin = ""
         self.token = ""

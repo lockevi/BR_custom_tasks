@@ -16,20 +16,39 @@ test_data = {
 }
 
 
-def test_adopter_validate_ok(adopter):
+def test_adopter_is_registered_ok(adopter):
+    """Check whether the card is registered or not"""
     adopter.set_bank_data(test_data)
-    res, token = adopter.validate("12345678", "1234", )
+    card_number = "12345678"
+    result = adopter.is_registered(card_number=card_number)
+    assert result == True
+
+
+def test_adopter_is_registered_fail_unregistered_card(adopter):
+    """Check whether the card is registered or not"""
+    adopter.set_bank_data(test_data)
+    card_number = "11112222"
+    result = adopter.is_registered(card_number=card_number)
+    assert result == False
+
+
+def test_adopter_validate_ok(adopter):
+    """Check entered-PIN == PIN of user's"""
+    adopter.set_bank_data(test_data)
+    res, token = adopter.validate(card_number="12345678", entered_pin="1234")
     assert res == True
     assert token == "87654321"
 
 
 def test_adopter_validate_fail(adopter):
+    """Fails if entered-PIN != PIN of user's"""
     adopter.set_bank_data(test_data)
-    res, token = adopter.validate("12345678", "0000", )
+    res, token = adopter.validate(card_number="12345678", entered_pin="0000")
     assert res == False
 
 
 def test_adopter_update_account_ok(adopter):
+    """Check the change of balance in the account after update_account"""
     adopter.set_bank_data(test_data)
     res, token = adopter.validate("12345678", "1234", )
     res, data = adopter.account_list(token)

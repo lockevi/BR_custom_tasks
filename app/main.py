@@ -97,11 +97,11 @@ def get_balance():
 
 def deposit(money: int):
     # Open money counter
-    ctrl.cash_bin.open()
+    ctrl.open_door()
     # [Fake Event] money event for testing controller
     ctrl.cash_bin.set_counting_money(money)
     # Close money counter
-    ctrl.cash_bin.close()
+    ctrl.close_door()
     # Count the money in money counter
     amount = ctrl.cash_bin.count_money()
 
@@ -126,7 +126,7 @@ def withdraw(amount: int):
         print("[ERROR]", e)
     else:
         print("Account:", account)
-        ctrl.cash_bin.close()
+        ctrl.close_door()
 
 
 def normal_flow_balance():
@@ -182,5 +182,5 @@ if __name__ == "__main__":
     normal_flow_balance()
     normal_flow_deposit(10)
     normal_flow_withdraw(25)
-    # app()
+
 
