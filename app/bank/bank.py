@@ -52,6 +52,7 @@ class Bank:
         """Select an account using account index in accounts list"""
         if len(self.accounts) > acc_idx >= 0:
             self.selected = acc_idx
+            return self.accounts[acc_idx]
         else:
             raise InvalidIndexException("bank.select_account()")
 

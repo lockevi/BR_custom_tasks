@@ -68,7 +68,7 @@ class ATMController:
                 logger.info(f"REGISTERED_CARD:{card_number}")
                 return card_number
             else:
-                logger.error(f"UNREGISTERED_CARD:{card_number}")
+                logger.info(f"UNREGISTERED_CARD:{card_number}")
                 self.reset()
                 raise UnregisteredCardNumberException("Unregistered Card")
 
@@ -94,7 +94,8 @@ class ATMController:
                 logger.info(f"PIN_IS_CORRECT")
                 return True
             else:
-                logger.error(f"PIN_IS_INCORRECT")
+                logger.info(f"PIN_IS_INCORRECT")
+                self.reset()
                 raise IncorrectPinNumberException(entered_pin)
                 # return False
         else:
@@ -118,29 +119,31 @@ class ATMController:
             return accounts
         else:
             # If there is no account, ATM ejects card and reset itself.
-            logger.error(f"NO_ACCOUNTS")
+            logger.info(f"NO_ACCOUNTS")
             self.reset()
             raise NoAccountException(self.bank.card_number)
 
-    def select_account(self, acc_idx: int):
+    def select_account(self, acc_idx: int) -> dict:
         """
         Select an account to GetBalance, Deposit or Withdraw
 
         :param acc_idx: selected index of accounts list
+        :return: dict: selected account info
         """
         # Check ATM Status
         if self.status < ATMStatus.ATM_ACCOUNTS_READY:
             logger.error(f"INVALID_STATUS:{self.status} at select_account")
             raise InvalidATMStatusException(self.status)
-        self.bank.select_account(acc_idx)
+        account = self.bank.select_account(acc_idx)
         self.status = ATMStatus.ATM_ACCOUNT_SELECTED
         logger.info(f"ACCOUNT_SELECTED: {acc_idx}")
+        return account
 
     def get_balance(self) -> int:
         """
         Get the balance of the selected account
 
-        :return: current balance of the account
+        :return: int: current balance of the account
         """
         # Check ATM Status
         if self.status < ATMStatus.ATM_ACCOUNT_SELECTED:
@@ -210,12 +213,12 @@ class ATMController:
         # Check the balance of the selected account
         current_balance = self.bank.get_account()["balance"]
         if amount > current_balance:
-            logger.error(f"NOT_ENOUGH_MONEY_IN_ACCOUNT:{amount} > {current_balance}")
+            logger.info(f"NOT_ENOUGH_MONEY_IN_ACCOUNT:{amount} > {current_balance}")
             self.reset()
             raise NotEnoughMoneyInAccountException(current_balance)
         # Check available money in the cash bin
         if amount > self.cash_bin.available_money:
-            logger.error(f"NOT_ENOUGH_MONEY_IN_CASH_BIN:{amount} > {self.cash_bin.available_money}")
+            logger.info(f"NOT_ENOUGH_MONEY_IN_CASH_BIN:{amount} > {self.cash_bin.available_money}")
             self.reset()
             raise NotEnoughMoneyInCashBinException(self.cash_bin.available_money)
         logger.info(f"BANK_WITHDRAW_START")
