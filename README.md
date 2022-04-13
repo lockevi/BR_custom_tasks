@@ -4,7 +4,7 @@
 
 This project is a simple ATM controller implemented by using python3.
 
-The *pdoc* generated more documents using docstrings in **./docs**.
+The *pdoc* generated more documents in **./docs** using docstrings.
 
 
 
@@ -129,7 +129,107 @@ As an ATM developer, I also tried to consider what ATM to do at same time.
 
 
 
+<img src="./imgs/state_diagram.png" alt="state_diagram" style="zoom:50%;" />
 
 
-## Structure of the ATM controller
+
+This simplified state diagram shows basic transition of the controller's state. More detailed states were defined in the ***[class ATMStatus](./docs/controller.html#ATMStatus)***.
+
+
+
+## Block Diagram of ATM controller
+
+
+
+<img src="./imgs/block_diagram.png" alt="block_diagram" style="zoom: 35%;" />
+
+#### [*class ATMController*](./docs/controller.html#ATMController)
+
+- Manages almost all of functions inside the ATM
+- Write a log (controller.log)
+- Sends dianosis data periodically to Control Center
+
+#### [*class Bank*](./docs/bank.html#Bank)
+
+- Manages the properties related to banking operation, like card number, account information and etc.
+- For loosely-coupling the controller and the banking APIs, ***class Bank*** wraps ***class BankAdopterInterface*** which has a bundle of real banking APIs.
+
+#### [*class BankAdopterInterface*](./docs/adopter.html#BankAdopterInterface)
+
+- Each bank may have its own banking APIs. But it doesn't matter to the controller if another developer implements them in inherited BankAdopter classes.
+
+#### [*class CardReaderInterface*](./docs/cardreader.html#CardReaderInterface)
+
+- Defines functionalities of the card reader device, like reading card number and ejecting the card.
+
+#### [*class CashBinInterface*](./docs/cashbin.html#CashBinInterface)
+
+- Defines functionalities of the cash bin, like open/close money counter, counting money, managing moving money in/out.
+- Cash bin has a limit of amount of money to withdraw less than current amount of money in cash bin.
+
+#### [*class PrinterInterface*](./docs/printer.html#PrinterInterface)
+
+- Defines functionalities of the receipt printer.
+- Receipt printer has a roll of paper to print and counts paper length remained.
+
+
+
+## Test Cases
+
+#### Hardwares
+
+- Card Reaer : [./tests/test_cardreader.py](./docs/tests/test_cardreader.html)
+- Cash Bin : [./tests/test_cashbin.py](./docs/tests/test_cashbin.html)
+- Receipt Printer : [./tests/test_printer.py](./docs/tests/test_printer.html)
+
+#### Bank
+
+- Bank Adopter : [./tests/test_adopter.py](./docs/tests/test_adopter.html)
+- Bank : [./tests/test_bank.py](./docs/tests/test_bank.html)
+
+#### ATM Controller
+
+- ATM Controller : [./tests/test_controller.py](./docs/tests/test_controller.html)
+
+
+
+
+
+## Logs
+
+The ATMController writes a log file to track the history of operations or debugging in current directory.
+
+```shell
+$ tail -30 controller.log
+
+[INFO]	2022-04-13 13:46:26.825    INSERTED_CARD:13572468
+[INFO]	2022-04-13 13:46:26.825    REGISTERED_CARD:13572468
+[INFO]	2022-04-13 13:46:26.825    PIN_IS_CORRECT
+[INFO]	2022-04-13 13:46:26.825    ACCOUNTS_DATA: [{'acc_num': '11113333', 'balance': 10, 'available': True}, {'acc_num': '22224444', 'balance': 50, 'available': True}]
+[INFO]	2022-04-13 13:46:26.825    ACCOUNT_SELECTED: 0
+[INFO]	2022-04-13 13:46:26.825    DOOR_OPENED
+[INFO]	2022-04-13 13:46:26.825    DOOR_CLOSED
+[INFO]	2022-04-13 13:46:26.825    MONEY_COUNTED: 10
+[INFO]	2022-04-13 13:46:26.825    BANK_DEPOSIT_START
+[INFO]	2022-04-13 13:46:26.825    BANK_DEPOSIT_OK
+[INFO]	2022-04-13 13:46:26.825    PUSH_MONEY
+[INFO]	2022-04-13 13:46:26.825    PRINT_RECEIPT
+[INFO]	2022-04-13 13:46:26.825    EJECTED_CARD
+[INFO]	2022-04-13 13:46:26.825    RESET
+
+[INFO]	2022-04-13 13:46:26.825    INSERTED_CARD:13572468
+[INFO]	2022-04-13 13:46:26.825    REGISTERED_CARD:13572468
+[INFO]	2022-04-13 13:46:26.825    PIN_IS_CORRECT
+[INFO]	2022-04-13 13:46:26.825    ACCOUNTS_DATA: [{'acc_num': '11113333', 'balance': 20, 'available': True}, {'acc_num': '22224444', 'balance': 50, 'available': True}]
+[INFO]	2022-04-13 13:46:26.825    ACCOUNT_SELECTED: 1
+[INFO]	2022-04-13 13:46:26.825    BANK_WITHDRAW_START
+[INFO]	2022-04-13 13:46:26.825    BANK_WITHDRAW_OK
+[INFO]	2022-04-13 13:46:26.825    POP_MONEY
+[INFO]	2022-04-13 13:46:26.825    DOOR_OPENED
+[INFO]	2022-04-13 13:46:26.825    PRINT_RECEIPT
+[INFO]	2022-04-13 13:46:26.825    EJECTED_CARD
+[INFO]	2022-04-13 13:46:26.826    RESET
+
+[INFO]	2022-04-13 13:46:26.826    DOOR_CLOSED
+```
 

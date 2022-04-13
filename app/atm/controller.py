@@ -9,13 +9,21 @@ from app.utils.logger import logger
 
 class ATMStatus:
     ATM_NEED_MAINTENANCE = -1   # "NEED_MAINTENANCE"
+    """ATM need to be checked for maintenance"""
     ATM_INIT = 0                # "INITIALIZING"
+    """In initializing process after booting ATM"""
     ATM_NO_CARD = 10            # "NO_CARD_INSERTED"
+    """Initial state when ATM is ready"""
     ATM_CARD_IN = 20            # "CARD_INSERTED"
+    """A user inserted a card into the card reader of this ATM"""
     ATM_REGISTERED_CARD = 21    # "REGISTERED_CARD"
+    """User inserted a registered card."""
     ATM_VALID_PIN = 30          # "VALID_PIN"
+    """User entered correct PIN number"""
     ATM_ACCOUNTS_READY = 40     # "ACCOUNTS_READY"
+    """ATM got some informations of accounts of user's."""
     ATM_ACCOUNT_SELECTED = 41   # "ACCOUNT_SELECTED"
+    """User selected one of accounts to work with"""
 
 
 class ATMController:

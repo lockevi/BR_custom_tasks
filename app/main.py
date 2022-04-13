@@ -103,7 +103,7 @@ def deposit(money: int):
     # Close money counter
     ctrl.close_door()
     # Count the money in money counter
-    amount = ctrl.cash_bin.count_money()
+    amount = ctrl.count_money()
 
     # Try to deposit
     try:

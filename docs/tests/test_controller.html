@@ -47,6 +47,39 @@
             <li>
                     <a class="function" href="#test_controller_validate_pin_number_ok">test_controller_validate_pin_number_ok</a>
             </li>
+            <li>
+                    <a class="function" href="#test_controller_validate_pin_number_fail_incorrect_entered_pin">test_controller_validate_pin_number_fail_incorrect_entered_pin</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_validate_pin_number_fail_invalid_entered_pin">test_controller_validate_pin_number_fail_invalid_entered_pin</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_get_accounts_ok">test_controller_get_accounts_ok</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_get_accounts_fail_no_account">test_controller_get_accounts_fail_no_account</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_get_balance_ok">test_controller_get_balance_ok</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_deposit_ok">test_controller_deposit_ok</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_deposit_fail_invalid_value">test_controller_deposit_fail_invalid_value</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_withdraw_ok">test_controller_withdraw_ok</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_withdraw_fail_invalid_value">test_controller_withdraw_fail_invalid_value</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_withdraw_fail_not_enough_money_in_account">test_controller_withdraw_fail_not_enough_money_in_account</a>
+            </li>
+            <li>
+                    <a class="function" href="#test_controller_withdraw_fail_not_enough_money_in_cashbin">test_controller_withdraw_fail_not_enough_money_in_cashbin</a>
+            </li>
     </ul>
 
 
@@ -69,7 +102,7 @@ tests<wbr>.test_controller    </h1>
             <div class="pdoc-code codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
 
 <span class="kn">from</span> <span class="nn">app.atm.controller</span> <span class="kn">import</span> <span class="n">ATMStatus</span>
-<span class="kn">from</span> <span class="nn">app.errors.exceptions</span> <span class="kn">import</span> <span class="n">InvalidCardNumberException</span><span class="p">,</span> <span class="n">UnregisteredCardNumberException</span>
+<span class="kn">from</span> <span class="nn">app.errors.exceptions</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="n">test_data</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;12345678&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -85,6 +118,10 @@ tests<wbr>.test_controller    </h1>
             <span class="p">{</span><span class="s2">&quot;acc_num&quot;</span><span class="p">:</span> <span class="s2">&quot;11113333&quot;</span><span class="p">,</span> <span class="s2">&quot;balance&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;available&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
             <span class="p">{</span><span class="s2">&quot;acc_num&quot;</span><span class="p">:</span> <span class="s2">&quot;22224444&quot;</span><span class="p">,</span> <span class="s2">&quot;balance&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;available&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
         <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;00000000&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;pin&quot;</span><span class="p">:</span> <span class="s2">&quot;0000&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;accounts&quot;</span><span class="p">:</span> <span class="p">[]</span>
     <span class="p">},</span>
 <span class="p">}</span>
 
@@ -146,6 +183,214 @@ tests<wbr>.test_controller    </h1>
     <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">is_valid</span> <span class="o">==</span> <span class="kc">True</span>
     <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_VALID_PIN</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_validate_pin_number_fail_incorrect_entered_pin</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If PIN is not correct, ATM need to eject the card and reset itself&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;0000&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_CARD_IN</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_REGISTERED_CARD</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">IncorrectPinNumberException</span><span class="p">):</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_validate_pin_number_fail_invalid_entered_pin</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If the format of entered-PIN is invalid, ERROR&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;123456&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_CARD_IN</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_REGISTERED_CARD</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">InvalidPinNumberException</span><span class="p">):</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_get_accounts_ok</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;To select an account, ATM needs to get account list from the bank&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_CARD_IN</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_REGISTERED_CARD</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_valid</span> <span class="o">==</span> <span class="kc">True</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_VALID_PIN</span>
+
+    <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">accounts</span> <span class="o">==</span> <span class="n">test_data</span><span class="p">[</span><span class="n">test_card_number</span><span class="p">][</span><span class="s2">&quot;accounts&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_get_accounts_fail_no_account</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If there is no account in the bank, ATM needs to reset itself&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;00000000&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;0000&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_CARD_IN</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_REGISTERED_CARD</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_valid</span> <span class="o">==</span> <span class="kc">True</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_VALID_PIN</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">NoAccountException</span><span class="p">):</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_get_balance_ok</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the balance by ATM (compare ATM with Bank)&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">balance</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_balance</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">balance</span> <span class="o">==</span> <span class="n">test_data</span><span class="p">[</span><span class="n">test_card_number</span><span class="p">][</span><span class="s2">&quot;accounts&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_deposit_ok</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the balance before/after deposit&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">15</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_deposit</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+            <span class="n">after_deposit</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="n">before_deposit</span> <span class="o">!=</span> <span class="n">after_deposit</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">before_deposit</span> <span class="o">+</span> <span class="n">amount</span><span class="p">)</span> <span class="o">==</span> <span class="n">after_deposit</span>
+            <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_deposit_fail_invalid_value</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the value of amount &gt; 0 to deposit&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span>      <span class="c1"># !!! amount &gt; 0 !!!</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_deposit</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">InvalidAmountValueException</span><span class="p">):</span>
+                <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_withdraw_ok</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the balance before/after withdraw&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">15</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+            <span class="n">after_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+
+            <span class="k">assert</span> <span class="n">before_withdraw</span> <span class="o">!=</span> <span class="n">after_withdraw</span>
+            <span class="k">assert</span> <span class="n">before_withdraw</span> <span class="o">==</span> <span class="p">(</span><span class="n">after_withdraw</span> <span class="o">+</span> <span class="n">amount</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_withdraw_fail_invalid_value</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the value of amount &gt; 0 to withdraw&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span>      <span class="c1"># !!! amount &gt; 0 !!!</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">InvalidAmountValueException</span><span class="p">):</span>
+                <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_withdraw_fail_not_enough_money_in_account</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check (the value of amount) &gt; (balance of account) to withdraw&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">500</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">NotEnoughMoneyInAccountException</span><span class="p">):</span>
+                <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">test_controller_withdraw_fail_not_enough_money_in_cashbin</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check (the value of amount) &gt; (available in cash bin) to withdraw&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">cash_bin</span><span class="o">.</span><span class="n">available_money</span> <span class="o">=</span> <span class="mi">50</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">NotEnoughMoneyInCashBinException</span><span class="p">):</span>
+                <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -291,6 +536,401 @@ tests<wbr>.test_controller    </h1>
         </details>
 
             <div class="docstring"><p>If PIN is correct, ATM is ready to get accounts list</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_validate_pin_number_fail_incorrect_entered_pin">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_validate_pin_number_fail_incorrect_entered_pin">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_validate_pin_number_fail_incorrect_entered_pin</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_validate_pin_number_fail_incorrect_entered_pin</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If PIN is not correct, ATM need to eject the card and reset itself&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;0000&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_CARD_IN</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_REGISTERED_CARD</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">IncorrectPinNumberException</span><span class="p">):</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>If PIN is not correct, ATM need to eject the card and reset itself</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_validate_pin_number_fail_invalid_entered_pin">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_validate_pin_number_fail_invalid_entered_pin">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_validate_pin_number_fail_invalid_entered_pin</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_validate_pin_number_fail_invalid_entered_pin</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If the format of entered-PIN is invalid, ERROR&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;123456&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_CARD_IN</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_REGISTERED_CARD</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">InvalidPinNumberException</span><span class="p">):</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>If the format of entered-PIN is invalid, ERROR</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_get_accounts_ok">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_get_accounts_ok">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_get_accounts_ok</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_get_accounts_ok</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;To select an account, ATM needs to get account list from the bank&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_CARD_IN</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_REGISTERED_CARD</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_valid</span> <span class="o">==</span> <span class="kc">True</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_VALID_PIN</span>
+
+    <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">accounts</span> <span class="o">==</span> <span class="n">test_data</span><span class="p">[</span><span class="n">test_card_number</span><span class="p">][</span><span class="s2">&quot;accounts&quot;</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>To select an account, ATM needs to get account list from the bank</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_get_accounts_fail_no_account">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_get_accounts_fail_no_account">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_get_accounts_fail_no_account</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_get_accounts_fail_no_account</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If there is no account in the bank, ATM needs to reset itself&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;00000000&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;0000&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_CARD_IN</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_REGISTERED_CARD</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_valid</span> <span class="o">==</span> <span class="kc">True</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_VALID_PIN</span>
+
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">NoAccountException</span><span class="p">):</span>
+        <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>If there is no account in the bank, ATM needs to reset itself</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_get_balance_ok">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_get_balance_ok">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_get_balance_ok</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_get_balance_ok</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the balance by ATM (compare ATM with Bank)&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">balance</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_balance</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">balance</span> <span class="o">==</span> <span class="n">test_data</span><span class="p">[</span><span class="n">test_card_number</span><span class="p">][</span><span class="s2">&quot;accounts&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Check the balance by ATM (compare ATM with Bank)</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_deposit_ok">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_deposit_ok">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_deposit_ok</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_deposit_ok</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the balance before/after deposit&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">15</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_deposit</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+            <span class="n">after_deposit</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="n">before_deposit</span> <span class="o">!=</span> <span class="n">after_deposit</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">before_deposit</span> <span class="o">+</span> <span class="n">amount</span><span class="p">)</span> <span class="o">==</span> <span class="n">after_deposit</span>
+            <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Check the balance before/after deposit</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_deposit_fail_invalid_value">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_deposit_fail_invalid_value">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_deposit_fail_invalid_value</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_deposit_fail_invalid_value</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the value of amount &gt; 0 to deposit&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span>      <span class="c1"># !!! amount &gt; 0 !!!</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_deposit</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">InvalidAmountValueException</span><span class="p">):</span>
+                <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">deposit</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Check the value of amount &gt; 0 to deposit</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_withdraw_ok">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_withdraw_ok">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_withdraw_ok</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_withdraw_ok</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the balance before/after withdraw&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">15</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+            <span class="n">after_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+
+            <span class="k">assert</span> <span class="n">before_withdraw</span> <span class="o">!=</span> <span class="n">after_withdraw</span>
+            <span class="k">assert</span> <span class="n">before_withdraw</span> <span class="o">==</span> <span class="p">(</span><span class="n">after_withdraw</span> <span class="o">+</span> <span class="n">amount</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">controller</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ATMStatus</span><span class="o">.</span><span class="n">ATM_NO_CARD</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Check the balance before/after withdraw</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_withdraw_fail_invalid_value">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_withdraw_fail_invalid_value">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_withdraw_fail_invalid_value</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_withdraw_fail_invalid_value</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check the value of amount &gt; 0 to withdraw&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span>      <span class="c1"># !!! amount &gt; 0 !!!</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">InvalidAmountValueException</span><span class="p">):</span>
+                <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Check the value of amount &gt; 0 to withdraw</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_withdraw_fail_not_enough_money_in_account">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_withdraw_fail_not_enough_money_in_account">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_withdraw_fail_not_enough_money_in_account</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_withdraw_fail_not_enough_money_in_account</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check (the value of amount) &gt; (balance of account) to withdraw&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">500</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">NotEnoughMoneyInAccountException</span><span class="p">):</span>
+                <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Check (the value of amount) &gt; (balance of account) to withdraw</p>
+</div>
+
+
+                </section>
+                <section id="test_controller_withdraw_fail_not_enough_money_in_cashbin">
+                            <div class="attr function"><a class="headerlink" href="#test_controller_withdraw_fail_not_enough_money_in_cashbin">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">test_controller_withdraw_fail_not_enough_money_in_cashbin</span><span class="signature">(controller)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">test_controller_withdraw_fail_not_enough_money_in_cashbin</span><span class="p">(</span><span class="n">controller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check (the value of amount) &gt; (available in cash bin) to withdraw&quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">bank</span><span class="o">.</span><span class="n">adopter</span><span class="o">.</span><span class="n">set_bank_data</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="n">test_card_number</span> <span class="o">=</span> <span class="s2">&quot;12345678&quot;</span>
+    <span class="n">test_pin_number</span> <span class="o">=</span> <span class="s2">&quot;1234&quot;</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">cash_bin</span><span class="o">.</span><span class="n">available_money</span> <span class="o">=</span> <span class="mi">50</span>
+
+    <span class="n">controller</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">test_card_number</span><span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">test_pin_number</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">accounts</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">accounts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">before_withdraw</span> <span class="o">=</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;balance&quot;</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">NotEnoughMoneyInCashBinException</span><span class="p">):</span>
+                <span class="n">account</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Check (the value of amount) &gt; (available in cash bin) to withdraw</p>
 </div>
 
 
