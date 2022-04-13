@@ -13,18 +13,21 @@ class Config:
 
 @dataclass
 class LocalConfig(Config):
+    """Configuration for local development"""
     DEBUG: bool = True
     TEST_MODE: bool = True
 
 
 @dataclass
 class ProdConfig(Config):
+    """Configuration for production device"""
     DEBUG: bool = False
     TEST_MODE: bool = False
 
 
 @dataclass
 class TestConfig(Config):
+    """Configuration for local testing"""
     DEBUG: bool = False
     TEST_MODE: bool = True
 

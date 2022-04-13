@@ -61,6 +61,8 @@ pytest
 As an ATM user, I described a series of my behaviors in order.
 As an ATM developer, I also tried to consider what ATM to do at same time.
 
+General workflows A, B and C are implemented in ***[app/main.py](./docs/main.html)***.
+
 #### 0. Insert card, Enter PIN and Select an account
 1. Put the card in
    - Is it registered card ?

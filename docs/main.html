@@ -107,6 +107,7 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">set_test_data</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Set the test data in DB of the bank&quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;12345678&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;pin&quot;</span><span class="p">:</span> <span class="s2">&quot;1234&quot;</span><span class="p">,</span>
@@ -127,10 +128,16 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Substitute the card insertion event&quot;&quot;&quot;</span>
     <span class="n">ctrl</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="o">=</span><span class="n">card_number</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">read_card_number</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    After a card is inserted, card reader starts to read the number of that card.</span>
+
+<span class="sd">    If that card was not registered in the bank, it&#39;s not possible to work.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">card_number</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">UnregisteredCardNumberException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -143,6 +150,7 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">validate_pin_number</span><span class="p">(</span><span class="n">entered_pin</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check entered-PIN == PIN in the bank&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">is_valid</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">entered_pin</span><span class="o">=</span><span class="s2">&quot;8888&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">IncorrectPinNumberException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -155,6 +163,7 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">get_accounts</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Get all information of accounts related to the card from the bank&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">accounts</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">NoAccountException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -167,6 +176,7 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">select_account</span><span class="p">(</span><span class="n">acc_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;User selected one of account in the accounts list&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">ctrl</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="n">acc_idx</span><span class="o">=</span><span class="n">acc_idx</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -176,6 +186,14 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">get_balance</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User chose [CHECK BALANCE] in the menu</span>
+
+<span class="sd">    1. ATM sent a request to the bank.</span>
+<span class="sd">    2. If ok, ATM shows the current balance of the account.</span>
+<span class="sd">    3. ATM prints the receipt.</span>
+<span class="sd">    4. ATM returns to initial state.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">balance</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">get_balance</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -185,6 +203,16 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">deposit</span><span class="p">(</span><span class="n">money</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User chose [DEPOSIT] in the menu</span>
+
+<span class="sd">    1. The door of money counter opened.</span>
+<span class="sd">    2. The door of money counter closed.</span>
+<span class="sd">    3. ATM counts the amount of money in money counter.</span>
+<span class="sd">    4. ATM sent a request to the bank.</span>
+<span class="sd">    5. If ok, ATM prints the receipt.</span>
+<span class="sd">    6. ATM returns to initial state.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Open money counter</span>
     <span class="n">ctrl</span><span class="o">.</span><span class="n">open_door</span><span class="p">()</span>
     <span class="c1"># [Fake Event] money event for testing controller</span>
@@ -206,6 +234,17 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User chose [WITHDRAW] in the menu</span>
+
+<span class="sd">    1. ATM sent a request to the bank.</span>
+<span class="sd">    2. If ok, take out that amount of money from the cash bin.</span>
+<span class="sd">    3. The door of money counter opened.</span>
+<span class="sd">    4. ATM prints receipt.</span>
+<span class="sd">    5. ATM ejects the card.</span>
+<span class="sd">    6. The door of money counter closed.</span>
+<span class="sd">    7. ATM returns to initial state.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Try to withdraw</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">account</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">)</span>
@@ -219,6 +258,17 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">normal_flow_balance</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User tries to check the balance of the account.</span>
+
+<span class="sd">    1. Insert a card</span>
+<span class="sd">    2. Enter PIN</span>
+<span class="sd">    3. Select an account</span>
+<span class="sd">    4. Select [CHECK BALANCE] in the menu</span>
+<span class="sd">    5. Watch the balance on screen.</span>
+<span class="sd">    6. Take a receipt</span>
+<span class="sd">    7. Take the card</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">HEADER</span><span class="si">}</span><span class="s2">Normal Flow: Check Balance</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">ENDC</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Insert card</span>
     <span class="n">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="o">=</span><span class="s2">&quot;13572468&quot;</span><span class="p">)</span>
@@ -235,6 +285,17 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">normal_flow_deposit</span><span class="p">(</span><span class="n">money</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User tries to deposit some money.</span>
+
+<span class="sd">    1. Insert a card</span>
+<span class="sd">    2. Enter PIN</span>
+<span class="sd">    3. Select an account</span>
+<span class="sd">    4. Select [DEPOSIT] in the menu</span>
+<span class="sd">    5. Put some money to deposit</span>
+<span class="sd">    6. Take a receipt</span>
+<span class="sd">    7. Take the card</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">HEADER</span><span class="si">}</span><span class="s2">Normal Flow: Deposit(</span><span class="si">{</span><span class="n">money</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">ENDC</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Insert card</span>
     <span class="n">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="o">=</span><span class="s2">&quot;13572468&quot;</span><span class="p">)</span>
@@ -251,6 +312,18 @@ main    </h1>
 
 
 <span class="k">def</span> <span class="nf">normal_flow_withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User tries to withdraw some money.</span>
+
+<span class="sd">    1. Insert a card</span>
+<span class="sd">    2. Enter PIN</span>
+<span class="sd">    3. Select an account</span>
+<span class="sd">    4. Select [WITHDRAW] in the menu</span>
+<span class="sd">    5. Input the amount of money to withdraw</span>
+<span class="sd">    6. Take the money out of money counter</span>
+<span class="sd">    7. Take a receipt</span>
+<span class="sd">    8. Take the card</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">HEADER</span><span class="si">}</span><span class="s2">Normal Flow: Withdraw(</span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">ENDC</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Insert card</span>
     <span class="n">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="o">=</span><span class="s2">&quot;13572468&quot;</span><span class="p">)</span>
@@ -287,6 +360,7 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">set_test_data</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Set the test data in DB of the bank&quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;12345678&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;pin&quot;</span><span class="p">:</span> <span class="s2">&quot;1234&quot;</span><span class="p">,</span>
@@ -308,7 +382,9 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>Set the test data in DB of the bank</p>
+</div>
+
 
                 </section>
                 <section id="insert_card">
@@ -322,12 +398,15 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Substitute the card insertion event&quot;&quot;&quot;</span>
     <span class="n">ctrl</span><span class="o">.</span><span class="n">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="o">=</span><span class="n">card_number</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-    
+            <div class="docstring"><p>Substitute the card insertion event</p>
+</div>
+
 
                 </section>
                 <section id="read_card_number">
@@ -341,6 +420,11 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">read_card_number</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    After a card is inserted, card reader starts to read the number of that card.</span>
+
+<span class="sd">    If that card was not registered in the bank, it&#39;s not possible to work.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">card_number</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">read_card_number</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">UnregisteredCardNumberException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -354,7 +438,11 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>After a card is inserted, card reader starts to read the number of that card.</p>
+
+<p>If that card was not registered in the bank, it's not possible to work.</p>
+</div>
+
 
                 </section>
                 <section id="validate_pin_number">
@@ -368,6 +456,7 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">validate_pin_number</span><span class="p">(</span><span class="n">entered_pin</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check entered-PIN == PIN in the bank&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">is_valid</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">validate_pin_number</span><span class="p">(</span><span class="n">entered_pin</span><span class="o">=</span><span class="s2">&quot;8888&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">IncorrectPinNumberException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -381,7 +470,9 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>Check entered-PIN == PIN in the bank</p>
+</div>
+
 
                 </section>
                 <section id="get_accounts">
@@ -395,6 +486,7 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_accounts</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Get all information of accounts related to the card from the bank&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">accounts</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">NoAccountException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -408,7 +500,9 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>Get all information of accounts related to the card from the bank</p>
+</div>
+
 
                 </section>
                 <section id="select_account">
@@ -422,6 +516,7 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">select_account</span><span class="p">(</span><span class="n">acc_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;User selected one of account in the accounts list&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">ctrl</span><span class="o">.</span><span class="n">select_account</span><span class="p">(</span><span class="n">acc_idx</span><span class="o">=</span><span class="n">acc_idx</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -432,7 +527,9 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>User selected one of account in the accounts list</p>
+</div>
+
 
                 </section>
                 <section id="get_balance">
@@ -446,6 +543,14 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_balance</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User chose [CHECK BALANCE] in the menu</span>
+
+<span class="sd">    1. ATM sent a request to the bank.</span>
+<span class="sd">    2. If ok, ATM shows the current balance of the account.</span>
+<span class="sd">    3. ATM prints the receipt.</span>
+<span class="sd">    4. ATM returns to initial state.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">balance</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">get_balance</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -456,7 +561,16 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>User chose [CHECK BALANCE] in the menu</p>
+
+<ol>
+<li>ATM sent a request to the bank.</li>
+<li>If ok, ATM shows the current balance of the account.</li>
+<li>ATM prints the receipt.</li>
+<li>ATM returns to initial state.</li>
+</ol>
+</div>
+
 
                 </section>
                 <section id="deposit">
@@ -470,6 +584,16 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">deposit</span><span class="p">(</span><span class="n">money</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User chose [DEPOSIT] in the menu</span>
+
+<span class="sd">    1. The door of money counter opened.</span>
+<span class="sd">    2. The door of money counter closed.</span>
+<span class="sd">    3. ATM counts the amount of money in money counter.</span>
+<span class="sd">    4. ATM sent a request to the bank.</span>
+<span class="sd">    5. If ok, ATM prints the receipt.</span>
+<span class="sd">    6. ATM returns to initial state.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Open money counter</span>
     <span class="n">ctrl</span><span class="o">.</span><span class="n">open_door</span><span class="p">()</span>
     <span class="c1"># [Fake Event] money event for testing controller</span>
@@ -492,7 +616,18 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>User chose [DEPOSIT] in the menu</p>
+
+<ol>
+<li>The door of money counter opened.</li>
+<li>The door of money counter closed.</li>
+<li>ATM counts the amount of money in money counter.</li>
+<li>ATM sent a request to the bank.</li>
+<li>If ok, ATM prints the receipt.</li>
+<li>ATM returns to initial state.</li>
+</ol>
+</div>
+
 
                 </section>
                 <section id="withdraw">
@@ -506,6 +641,17 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User chose [WITHDRAW] in the menu</span>
+
+<span class="sd">    1. ATM sent a request to the bank.</span>
+<span class="sd">    2. If ok, take out that amount of money from the cash bin.</span>
+<span class="sd">    3. The door of money counter opened.</span>
+<span class="sd">    4. ATM prints receipt.</span>
+<span class="sd">    5. ATM ejects the card.</span>
+<span class="sd">    6. The door of money counter closed.</span>
+<span class="sd">    7. ATM returns to initial state.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Try to withdraw</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">account</span> <span class="o">=</span> <span class="n">ctrl</span><span class="o">.</span><span class="n">withdraw</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">)</span>
@@ -520,7 +666,19 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>User chose [WITHDRAW] in the menu</p>
+
+<ol>
+<li>ATM sent a request to the bank.</li>
+<li>If ok, take out that amount of money from the cash bin.</li>
+<li>The door of money counter opened.</li>
+<li>ATM prints receipt.</li>
+<li>ATM ejects the card.</li>
+<li>The door of money counter closed.</li>
+<li>ATM returns to initial state.</li>
+</ol>
+</div>
+
 
                 </section>
                 <section id="normal_flow_balance">
@@ -534,6 +692,17 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">normal_flow_balance</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User tries to check the balance of the account.</span>
+
+<span class="sd">    1. Insert a card</span>
+<span class="sd">    2. Enter PIN</span>
+<span class="sd">    3. Select an account</span>
+<span class="sd">    4. Select [CHECK BALANCE] in the menu</span>
+<span class="sd">    5. Watch the balance on screen.</span>
+<span class="sd">    6. Take a receipt</span>
+<span class="sd">    7. Take the card</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">HEADER</span><span class="si">}</span><span class="s2">Normal Flow: Check Balance</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">ENDC</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Insert card</span>
     <span class="n">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="o">=</span><span class="s2">&quot;13572468&quot;</span><span class="p">)</span>
@@ -551,7 +720,19 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>User tries to check the balance of the account.</p>
+
+<ol>
+<li>Insert a card</li>
+<li>Enter PIN</li>
+<li>Select an account</li>
+<li>Select [CHECK BALANCE] in the menu</li>
+<li>Watch the balance on screen.</li>
+<li>Take a receipt</li>
+<li>Take the card</li>
+</ol>
+</div>
+
 
                 </section>
                 <section id="normal_flow_deposit">
@@ -565,6 +746,17 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">normal_flow_deposit</span><span class="p">(</span><span class="n">money</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User tries to deposit some money.</span>
+
+<span class="sd">    1. Insert a card</span>
+<span class="sd">    2. Enter PIN</span>
+<span class="sd">    3. Select an account</span>
+<span class="sd">    4. Select [DEPOSIT] in the menu</span>
+<span class="sd">    5. Put some money to deposit</span>
+<span class="sd">    6. Take a receipt</span>
+<span class="sd">    7. Take the card</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">HEADER</span><span class="si">}</span><span class="s2">Normal Flow: Deposit(</span><span class="si">{</span><span class="n">money</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">ENDC</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Insert card</span>
     <span class="n">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="o">=</span><span class="s2">&quot;13572468&quot;</span><span class="p">)</span>
@@ -582,7 +774,19 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>User tries to deposit some money.</p>
+
+<ol>
+<li>Insert a card</li>
+<li>Enter PIN</li>
+<li>Select an account</li>
+<li>Select [DEPOSIT] in the menu</li>
+<li>Put some money to deposit</li>
+<li>Take a receipt</li>
+<li>Take the card</li>
+</ol>
+</div>
+
 
                 </section>
                 <section id="normal_flow_withdraw">
@@ -596,6 +800,18 @@ main    </h1>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">normal_flow_withdraw</span><span class="p">(</span><span class="n">amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    User tries to withdraw some money.</span>
+
+<span class="sd">    1. Insert a card</span>
+<span class="sd">    2. Enter PIN</span>
+<span class="sd">    3. Select an account</span>
+<span class="sd">    4. Select [WITHDRAW] in the menu</span>
+<span class="sd">    5. Input the amount of money to withdraw</span>
+<span class="sd">    6. Take the money out of money counter</span>
+<span class="sd">    7. Take a receipt</span>
+<span class="sd">    8. Take the card</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">HEADER</span><span class="si">}</span><span class="s2">Normal Flow: Withdraw(</span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">C</span><span class="o">.</span><span class="n">ENDC</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Insert card</span>
     <span class="n">insert_card</span><span class="p">(</span><span class="n">card_number</span><span class="o">=</span><span class="s2">&quot;13572468&quot;</span><span class="p">)</span>
@@ -613,7 +829,20 @@ main    </h1>
 
         </details>
 
-    
+            <div class="docstring"><p>User tries to withdraw some money.</p>
+
+<ol>
+<li>Insert a card</li>
+<li>Enter PIN</li>
+<li>Select an account</li>
+<li>Select [WITHDRAW] in the menu</li>
+<li>Input the amount of money to withdraw</li>
+<li>Take the money out of money counter</li>
+<li>Take a receipt</li>
+<li>Take the card</li>
+</ol>
+</div>
+
 
                 </section>
     </main>
