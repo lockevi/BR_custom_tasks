@@ -135,7 +135,7 @@ General workflows A, B and C are implemented in ***[app/main.py](./docs/main.htm
 
 <img src="./imgs/state_diagram.png" alt="state_diagram" width="500"/>
 
-This simplified state diagram shows basic transition of the controller's state. More detailed states were defined in the ***[class ATMStatus](./docs/controller.html#ATMStatus)***.
+This simplified state diagram shows basic transitions between the controller's states. More detailed states were defined in the ***[class ATMStatus](./docs/controller.html#ATMStatus)***.
 
 ---
 
@@ -174,7 +174,10 @@ This simplified state diagram shows basic transition of the controller's state. 
 
 ## Test Cases
 
+All test cases below are tested by using *pytest*.
+
 #### Hardwares
+
 - Card Reaer : [./tests/test_cardreader.py](./docs/tests/test_cardreader.html)
 - Cash Bin : [./tests/test_cashbin.py](./docs/tests/test_cashbin.html)
 - Receipt Printer : [./tests/test_printer.py](./docs/tests/test_printer.html)
@@ -192,7 +195,9 @@ This simplified state diagram shows basic transition of the controller's state. 
 
 ## Logs
 
-The ATMController writes a log file to track the history of operations or debugging in current directory.
+The ATMController writes a log file to track the history of operations or debugging in current directory. 
+
+The level of logging depends on configuration (*app/common/config.py*).
 
 ```shell
 $ tail -30 controller.log
