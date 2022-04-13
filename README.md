@@ -61,7 +61,7 @@ pytest
 As an ATM user, I described a series of my behaviors in order.
 As an ATM developer, I also tried to consider what ATM to do at same time.
 
-#### 0. Insert card & Select an account
+#### 0. Insert card, Enter PIN and Select an account
 1. Put the card in
    - Is it registered card ?
 2. Enter the PIN number
@@ -127,11 +127,7 @@ As an ATM developer, I also tried to consider what ATM to do at same time.
 
 ## State Diagram
 
-
-
-<img src="./imgs/state_diagram.png" alt="state_diagram" style="zoom:50%;" />
-
-
+<img src="./imgs/state_diagram.png" alt="state_diagram" width="500"/>
 
 This simplified state diagram shows basic transition of the controller's state. More detailed states were defined in the ***[class ATMStatus](./docs/controller.html#ATMStatus)***.
 
@@ -139,36 +135,28 @@ This simplified state diagram shows basic transition of the controller's state. 
 
 ## Block Diagram of ATM controller
 
-
-
-<img src="./imgs/block_diagram.png" alt="block_diagram" style="zoom: 35%;" />
+<img src="./imgs/block_diagram.png" alt="block_diagram" width="500" />
 
 #### [*class ATMController*](./docs/controller.html#ATMController)
-
 - Manages almost all of functions inside the ATM
 - Write a log (controller.log)
 - Sends dianosis data periodically to Control Center
 
 #### [*class Bank*](./docs/bank.html#Bank)
-
 - Manages the properties related to banking operation, like card number, account information and etc.
 - For loosely-coupling the controller and the banking APIs, ***class Bank*** wraps ***class BankAdopterInterface*** which has a bundle of real banking APIs.
 
 #### [*class BankAdopterInterface*](./docs/adopter.html#BankAdopterInterface)
-
 - Each bank may have its own banking APIs. But it doesn't matter to the controller if another developer implements them in inherited BankAdopter classes.
 
 #### [*class CardReaderInterface*](./docs/cardreader.html#CardReaderInterface)
-
 - Defines functionalities of the card reader device, like reading card number and ejecting the card.
 
 #### [*class CashBinInterface*](./docs/cashbin.html#CashBinInterface)
-
 - Defines functionalities of the cash bin, like open/close money counter, counting money, managing moving money in/out.
 - Cash bin has a limit of amount of money to withdraw less than current amount of money in cash bin.
 
 #### [*class PrinterInterface*](./docs/printer.html#PrinterInterface)
-
 - Defines functionalities of the receipt printer.
 - Receipt printer has a roll of paper to print and counts paper length remained.
 
@@ -177,18 +165,15 @@ This simplified state diagram shows basic transition of the controller's state. 
 ## Test Cases
 
 #### Hardwares
-
 - Card Reaer : [./tests/test_cardreader.py](./docs/tests/test_cardreader.html)
 - Cash Bin : [./tests/test_cashbin.py](./docs/tests/test_cashbin.html)
 - Receipt Printer : [./tests/test_printer.py](./docs/tests/test_printer.html)
 
 #### Bank
-
 - Bank Adopter : [./tests/test_adopter.py](./docs/tests/test_adopter.html)
 - Bank : [./tests/test_bank.py](./docs/tests/test_bank.html)
 
 #### ATM Controller
-
 - ATM Controller : [./tests/test_controller.py](./docs/tests/test_controller.html)
 
 

@@ -22,6 +22,7 @@ class TestPrinter(PrinterInterface):
         self.paper = paper
 
     def get_available_paper(self):
+        """Returns current length of paper in the printer"""
         return self.paper
 
     def print_receipt(self, data: str):
