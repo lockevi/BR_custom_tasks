@@ -31,7 +31,6 @@ source ./venv/bin/activate
 ```shell
 pip install -r ./requirements.txt
 ```
-
 ---
 
 
@@ -46,6 +45,7 @@ python3 main.py
 ```
 
 ***tests/\*.py*** : ***pytest*** was used for a lot of test cases. Simply run ***pytest*** at directory ***./tests***.
+
 ```shell
 export PYTHONPATH=`pwd`
 cd ./tests
@@ -103,6 +103,8 @@ As an ATM developer, I also tried to consider what ATM to do at same time.
    - **Print** a receipt
    - Flow ends. **Return** to initial state.
 
+---
+
 
 
 ## More Assumptions
@@ -123,6 +125,8 @@ As an ATM developer, I also tried to consider what ATM to do at same time.
    - Detecting card insertion, Users' money moves in/out
    - Event handling is out of the scope to make a simpler problem.
 
+---
+
 
 
 ## State Diagram
@@ -130,6 +134,8 @@ As an ATM developer, I also tried to consider what ATM to do at same time.
 <img src="./imgs/state_diagram.png" alt="state_diagram" width="500"/>
 
 This simplified state diagram shows basic transition of the controller's state. More detailed states were defined in the ***[class ATMStatus](./docs/controller.html#ATMStatus)***.
+
+---
 
 
 
@@ -160,6 +166,8 @@ This simplified state diagram shows basic transition of the controller's state. 
 - Defines functionalities of the receipt printer.
 - Receipt printer has a roll of paper to print and counts paper length remained.
 
+---
+
 
 
 ## Test Cases
@@ -176,7 +184,7 @@ This simplified state diagram shows basic transition of the controller's state. 
 #### ATM Controller
 - ATM Controller : [./tests/test_controller.py](./docs/tests/test_controller.html)
 
-
+---
 
 
 
@@ -218,3 +226,4 @@ $ tail -30 controller.log
 [INFO]	2022-04-13 13:46:26.826    DOOR_CLOSED
 ```
 
+---
